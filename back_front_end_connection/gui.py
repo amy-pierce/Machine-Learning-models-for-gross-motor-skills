@@ -109,4 +109,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    output = open("output.txt","w")
+    output.close()
     sys.exit(app.exec_())

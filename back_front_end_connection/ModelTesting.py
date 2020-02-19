@@ -16,7 +16,7 @@ class Testing:
 	def analyse(self):
 		self.motion_keys = {0 : "HopLeft", 1 : "HopRight", 2 : "JogSpot", 3 : "JumpForward", 4 : "JumpHigh", 5 : "JumpSide"}
 		self.model = tensorflow.keras.models.load_model(r".\Current Model\current_model") #loaded model
-		self.output = open("output.txt","w")
+		self.output = open("output.txt","a")
 		for path in self.filepaths:
 
 				t_motion = pickle.load(open(path, "rb"))
@@ -46,9 +46,10 @@ class Testing:
 				elif self.motion_keys[np.argmax(guesssed_motions)] == "JumpSide" and "JumpSide" in path:
 					self.output.write("JumpSide\n")
 				else:
-					print("\nMotion", i)
+					print("\nMotion", self.i)
 					print("Most Likely:", self.motion_keys[np.argmax(guesssed_motions)])
 					print("Mismatch on motion -", path)
+					self.output.write("Most Likely:", self.motion_keys[np.argmax(guesssed_motions)]+"Mismatch on motion -", path)
 					p = ""
 					if "HopLeft" in path:
 						p = "HopLeft"
