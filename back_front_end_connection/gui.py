@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetI
 from PyQt5.QtCore import Qt, QUrl
 from ModelTesting import Testing
 
+
 class ListBoxWidget(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
