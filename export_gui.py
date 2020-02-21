@@ -5,9 +5,12 @@ from tkinter import *
 import csv
 from tkinter.filedialog import asksaveasfile 
 from tkinter.filedialog import askopenfile 
+from tkinter.filedialog import askopenfilename
+from pandas import DataFrame
 
 
-
+Tk().withdraw()
+file_content=""
 
 class ListBoxWidget(QListWidget):
     def __init__(self, parent=None):
@@ -66,11 +69,11 @@ class Ui_MainWindow(object):
 
         self.exportButton = QtWidgets.QPushButton(self.centralwidget)
         self.exportButton.setGeometry(QtCore.QRect(730, 540, 93, 28))
-        self.exportButton.setObjectName("readButton")
+        self.exportButton.setObjectName("exportButton")
 
         self.importButton = QtWidgets.QPushButton(self.centralwidget)
         self.importButton.setGeometry(QtCore.QRect(130, 540, 93, 28))
-        self.importButton.setObjectName("readButton")
+        self.importButton.setObjectName("importButton")
 
 
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralwidget)
@@ -104,16 +107,25 @@ class Ui_MainWindow(object):
         return item.text()
 
     def save(self): 
+
+        results = {'Filename': [self.getCurrentFile()],
+        'File Content': [self.openCurrentFile()]
+        }
+
+        to_export = DataFrame(results, columns= ['Filename', 'File Content'])
+       # print (to_export)
+        export_csv = to_export.to_csv (r'C:\Users\amypi\Desktop\export_file.csv', index = None, header=True) #Don't forget to add '.csv' at the end of the path
+
+
+    def upload(self): 
         files = [('All Files', '*.*'),  
              ('Python Files', '*.py'), 
              ('Text Document', '*.txt')] 
-        file = asksaveasfile(filetypes = files, defaultextension = files) 
-  
-    def upload(self): 
-        file = askopenfile(mode ='r', filetypes =[('Python Files', '*.py')]) 
+        file = askopenfilename()       
         if file is not None: 
-            content = file.read() 
-            print(content)        
+            print(file) 
+
+
 
     def openCurrentFile(self):
         self.path = self.getCurrentFile()
@@ -121,6 +133,9 @@ class Ui_MainWindow(object):
             print("no file uploaded")
         self.text = open(str(self.path)).read()
         self.plainTextEdit.setPlainText(self.text)
+        file_content=self.text
+        return file_content
+        
 
 
     def retranslateUi(self, MainWindow):
@@ -145,3 +160,5 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+    print (file_conent)
+
