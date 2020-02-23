@@ -1,6 +1,9 @@
+import base64
+import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton
-from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtCore import Qt, QUrl, QSize, QObject, pyqtSlot
+from PyQt5.QtGui import QIcon
 
 class ListBoxWidget(QListWidget):
     def __init__(self, parent=None):
@@ -34,17 +37,15 @@ class ListBoxWidget(QListWidget):
                     links.add(str(url.toLocalFile()))
                 else:
                     links.add(str(url.toString()))
-
-            self.addItems(links)
+            for file in links:
+                fileName = file.split("/")[-1]
+                self.addItem(fileName)
             print(links)
         else:
             event.ignore()
 
 
-
-
-
-class Ui_MainWindow(object):
+class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(948, 600)
@@ -64,28 +65,40 @@ class Ui_MainWindow(object):
         self.plainTextEdit.setBackgroundVisible(False)
         self.plainTextEdit.setObjectName("plainTextEdit")
 
+        self.frame1 = QtWidgets.QWidget(self.centralwidget)
+        self.frame1.setGeometry(QtCore.QRect(120, 540, 701, 30))
+        self.frame1.setObjectName("frame1")
+
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.frame1)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+
+        self.importButton = QtWidgets.QPushButton(self.frame1)
+        self.importButton.setObjectName("importButton")
+
+        self.horizontalLayout.addWidget(self.importButton)
+        spacerItem = QtWidgets.QSpacerItem(518, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+
+        self.exportButton = QtWidgets.QPushButton(self.frame1)
+        self.exportButton.setObjectName("exportButton")
+        self.horizontalLayout.addWidget(self.exportButton)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 948, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
+
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        self.readButton.clicked.connect(lambda: self.openCurrentFile())
-
         self.retranslateUi(MainWindow)
+        self.importButton.clicked.connect(self.importSlot)
+        self.exportButton.clicked.connect(self.exportSlot)
+        self.readButton.clicked.connect(self.readFileSlot)        
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def getCurrentFile(self):
-        item = QListWidgetItem(self.lstbox.currentItem())
-        return item.text()
-
-    def openCurrentFile(self):
-        self.path = self.getCurrentFile()
-        self.text = open(str(self.path)).read()
-        self.plainTextEdit.setPlainText(self.text)
 
 
     def retranslateUi(self, MainWindow):
@@ -93,6 +106,20 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.readButton.setText(_translate("MainWindow", "Read File"))
         self.plainTextEdit.setDocumentTitle(_translate("MainWindow", "Output"))
+        self.importButton.setText(_translate("MainWindow", "Import"))
+        self.exportButton.setText(_translate("MainWindow", "Export"))
+
+    @pyqtSlot( )
+    def importSlot( self ):
+        pass
+
+    @pyqtSlot( )
+    def exportSlot( self ):
+        pass
+
+    @pyqtSlot( )
+    def readFileSlot( self ):
+        pass
 
 
 if __name__ == "__main__":
