@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton
 from PyQt5.QtCore import Qt, QUrl
-from ModelTesting import Testing
+from back_front_end_connection.ModelTesting import Testing
 
 
 class ListBoxWidget(QListWidget):
