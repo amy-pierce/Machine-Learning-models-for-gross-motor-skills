@@ -5,14 +5,14 @@ import os
 import fnmatch
 import tensorflow as tf
 motion_keys = {0 : "HopLeft", 1 : "HopRight", 2 : "JogSpot", 3 : "JumpForward", 4 : "JumpHigh", 5 : "JumpSide"}
-model = tensorflow.keras.models.load_model(r".\Models\Current Model\current_model") #loaded model
+model = tensorflow.keras.models.load_model(r"Current Model/current_model") #loaded model
 
 print("Filepathing started...")
 filepaths = list()
 for i,j,y in os.walk('Uncompressed'):
 	for n in y:
 		if fnmatch.fnmatch(n, '*.pickle'):
-			filepaths.append(str(i) + "\\" + str(y[1]))
+			filepaths.append(str(i) + "/" + str(y[1]))
 print("Filepathing finished. Loading frame data...")
 
 total_entries = len(filepaths);
@@ -23,7 +23,7 @@ random.shuffle(filepaths)
 i = 0
 
 for path in filepaths:
-	try:
+
 		t_motion = pickle.load(open(path, "rb"))
 		t_frames = list()
 
@@ -68,8 +68,7 @@ for path in filepaths:
 			elif "JumpSide" in path:
 				p = "JumpSide"
 			print("Actually :", p)
-	except Exception as e:
-		print("\t\t SHAPE ERROR:",path)
+
 
 print("\nTotal Incorrect:", total_entries-total_correct, "/", total_entries)
 print("Model Accuracy :", (total_correct/total_entries) * 100, "%")

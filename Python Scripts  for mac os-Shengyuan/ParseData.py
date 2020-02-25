@@ -79,7 +79,7 @@ for filename in files:
 		motion = [motion[i * FRAMES_SET:(i + 1) * FRAMES_SET] for i in range((len(motion) + FRAMES_SET - 1) // FRAMES_SET)]
 		motion = np.array(motion)
 
-		namestring = filename + "//tensor.pickle"
+		namestring = filename + "/tensor.pickle"
 		if len(motion) != 0:
 			motion = np.array(motion)
 			print("Writing to", namestring)
