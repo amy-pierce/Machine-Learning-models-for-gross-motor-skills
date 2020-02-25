@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton
-from mainFrame import Ui_MainWindow
+from mainFrame import Ui_MainWindow, links, linkNames
 import sys
 from fileReader import FileReader
 
@@ -15,6 +15,8 @@ class MainWindowUIClass(Ui_MainWindow):
 
     def refreshAll(self):
         selectedFileName = self.fileReader.getFileName()
+        print(selectedFileName)
+        links.append(selectedFileName)
         self.lstbox.addItem(selectedFileName.split("/")[-1])
 
     def clearText(self):
@@ -46,8 +48,10 @@ class MainWindowUIClass(Ui_MainWindow):
     def readFileSlot(self):
         self.path = QListWidgetItem(self.lstbox.currentItem()).text()
         if self.path != '':
-            self.text = open(str(self.path)).read()
+            index = linkNames.index(self.path)
+            self.text = open(str(links[index])).read()
             self.plainTextEdit.setPlainText(self.text)
+
 
 
 def main():

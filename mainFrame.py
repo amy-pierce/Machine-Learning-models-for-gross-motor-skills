@@ -5,6 +5,9 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetI
 from PyQt5.QtCore import Qt, QUrl, QSize, QObject, pyqtSlot
 from PyQt5.QtGui import QIcon
 
+links = []
+linkNames = []
+
 class ListBoxWidget(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -26,7 +29,6 @@ class ListBoxWidget(QListWidget):
             event.ignore()
 
     def dropEvent(self, event):
-        links = set([])
 
         if event.mimeData().hasUrls():
             event.setDropAction(Qt.CopyAction)
@@ -34,12 +36,15 @@ class ListBoxWidget(QListWidget):
 
             for url in event.mimeData().urls():
                 if url.isLocalFile():
-                    links.add(str(url.toLocalFile()))
-                else:
-                    links.add(str(url.toString()))
-            for file in links:
-                fileName = file.split("/")[-1]
-                self.addItem(fileName)
+                    tmp = str(url.toLocalFile())
+                    links.append(tmp)
+                    onlyFileName = tmp.split("/")[-1]
+                    linkNames.append(onlyFileName)
+                    self.addItem(onlyFileName)
+
+            # for file in links:
+            #     fileName = file.split("/")[-1]
+            #     self.addItem(fileName)
             print(links)
         else:
             event.ignore()
@@ -47,6 +52,7 @@ class ListBoxWidget(QListWidget):
 
 class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(948, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
