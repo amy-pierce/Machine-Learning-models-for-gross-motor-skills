@@ -14,13 +14,20 @@ class Parser:
 	def parse(self):
 		self.FRAMES_SET = 1
 		files = list()
-		for i,j,y in os.walk(self.folder):
-			for n in y:
-				if fnmatch.fnmatch(n, '*.json'):
-					files.append(str(i))
+		if(".json" in self.folder):
+			path = self.folder.split('/')
+			path = path[:-1]
+			pathn = ""
+			for tmp in path:
+				pathn += tmp + "/"
+			files.append(pathn)
+		else:
+			for i,j,y in os.walk(self.folder):
+				for n in y:
+					if fnmatch.fnmatch(n, '*.json'):
+						files.append(str(i))
 
 		pickleName = list()
-		prevName = ""
 		for filename in files:
 			try:
 				#Whole data file

@@ -32,18 +32,31 @@ class Testing:
 				
 				self.i+=1
 
-				if self.motion_keys[np.argmax(guesssed_motions)] == "HopLeft":
-					self.output.write("HopLeft\n")
-				elif self.motion_keys[np.argmax(guesssed_motions)] == "HopRight":
-					self.output.write("HopRight\n")
-				elif self.motion_keys[np.argmax(guesssed_motions)] == "JogSpot":
-					self.output.write("JogSpot\n")
-				elif self.motion_keys[np.argmax(guesssed_motions)] == "JumpForward":
-					self.output.write("JumpForward\n")
-				elif self.motion_keys[np.argmax(guesssed_motions)] == "JumpHigh":
-					self.output.write("JumpHigh\n")
-				elif self.motion_keys[np.argmax(guesssed_motions)] == "JumpSide":
-					self.output.write("JumpSide\n")
+				file_name = path.split('\\')
+				print(file_name)
+				if(len(file_name)>2):
+					file_name = file_name[-2]
+				else:
+					file_name = file_name[0].split('/')
+					if(file_name[-1] != ""):
+						file_name = file_name[-1]
+					else:
+						file_name = file_name[-2]
+						file_name += "/skeleton.json"
+				guessedIndex = np.argmax(guesssed_motions)
+				surePercentage = str(100*round((guesssed_motions[guessedIndex]/np.sum(guesssed_motions)),2))
+				if self.motion_keys[guessedIndex] == "HopLeft":
+					self.output.write(file_name +" is " + surePercentage + "% " + "HopLeft\n")
+				elif self.motion_keys[guessedIndex] == "HopRight":
+					self.output.write(file_name +" is " + surePercentage + "% " + "HopRight\n")
+				elif self.motion_keys[guessedIndex] == "JogSpot":
+					self.output.write(file_name +" is " + surePercentage + "% " + "JogSpot\n")
+				elif self.motion_keys[guessedIndex] == "JumpForward":
+					self.output.write(file_name +" is " + surePercentage + "% " + "JumpForward\n")
+				elif self.motion_keys[guessedIndex] == "JumpHigh":
+					self.output.write(file_name +" is " + surePercentage + "% " + "JumpHigh\n")
+				elif self.motion_keys[guessedIndex] == "JumpSide":
+					self.output.write(file_name +" is " + surePercentage + "% " + "JumpSide\n")
 				else:
 					print("\nMotion", self.i)
 					print("Most Likely:", self.motion_keys[np.argmax(guesssed_motions)])
