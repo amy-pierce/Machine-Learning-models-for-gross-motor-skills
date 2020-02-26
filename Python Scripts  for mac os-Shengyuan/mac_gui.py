@@ -43,9 +43,6 @@ class ListBoxWidget(QListWidget):
             event.ignore()
 
 
-
-
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -89,12 +86,9 @@ class Ui_MainWindow(object):
         print(self.path)
         self.testing = Testing(str(self.path))
         self.testing.analyse()
-        self.outputFile = open("output.txt","r")
-        self.text = self.outputFile.read() 
+        self.outputFile = open("output.txt", "r")
+        self.text = self.outputFile.read()
         self.plainTextEdit.setPlainText(self.text)
-    
-
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -105,11 +99,12 @@ class Ui_MainWindow(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    output = open("output.txt","w")
+    output = open("output.txt", "w")
     output.close()
     sys.exit(app.exec_())
