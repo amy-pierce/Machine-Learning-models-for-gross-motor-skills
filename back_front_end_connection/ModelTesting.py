@@ -31,18 +31,24 @@ class Testing:
 					guesssed_motions[np.argmax(x)] += 1
 				
 				self.i+=1
-
+				print(path)
 				file_name = path.split('\\')
 				print(file_name)
 				if(len(file_name)>2):
-					file_name = file_name[-2]
+					rootFolder = file_name[0].split('/')
+					print(rootFolder)
+					rootFolder = rootFolder[-1]
+					rootFolder += '/'
+					if(len(file_name) > 1):
+						file_name = file_name[1:]
+					for tmp in file_name:
+						rootFolder += tmp + '/'
+					rootFolder = rootFolder[:-1]
+					file_name = rootFolder
+					file_name.replace('\\','/')
 				else:
-					file_name = file_name[0].split('/')
-					if(file_name[-1] != ""):
-						file_name = file_name[-1]
-					else:
-						file_name = file_name[-2]
-						file_name += "/skeleton.json"
+					file_name = path
+					file_name.replace('\\','/')
 				guessedIndex = np.argmax(guesssed_motions)
 				surePercentage = str(100*round((guesssed_motions[guessedIndex]/np.sum(guesssed_motions)),2))
 				if self.motion_keys[guessedIndex] == "HopLeft":
@@ -58,8 +64,6 @@ class Testing:
 				elif self.motion_keys[guessedIndex] == "JumpSide":
 					self.output.write(file_name +" is " + surePercentage + "% " + "JumpSide\n")
 				else:
-					print("\nMotion", self.i)
-					print("Most Likely:", self.motion_keys[np.argmax(guesssed_motions)])
 					self.output.write("Most Likely:", self.motion_keys[np.argmax(guesssed_motions)])
 
 
