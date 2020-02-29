@@ -5,12 +5,10 @@ import pickle
 import os
 import fnmatch
 
-FRAMES_SET = 1
-
 files = list()
 for i,j,y in os.walk('Uncompressed'):
 	for n in y:
-		if fnmatch.fnmatch(n, '*.json'):
+		if fnmatch.fnmatch(n, 'skeleton.json'):
 			files.append(str(i))
 
 for filename in files:
@@ -43,6 +41,7 @@ for filename in files:
 			#final frame data, appended to the motion
 			framedata = list()
 			framedata.append(ground_coordinates)
+
 			#includes list of whether the tracking is picking up
 			tracking = list()
 			for t in frame['b']['j']:
@@ -50,6 +49,7 @@ for filename in files:
 
 			#includes list of position coordinates of each joint
 			j = 0
+			
 			for position in frame['b']['j']:
 				posCoords = position['p']
 				posCoords = re.findall(r"[-+]?\d*\.\d+|\d+", posCoords)
@@ -59,8 +59,8 @@ for filename in files:
 				posCoords.append(float(tracking[j]))
 				j+=1
 				framedata.append(posCoords)
-
-			j = 0
+			''' #Add rotational tracking
+			j = 0 
 			#includes list of rotation offsets of each joint
 			for rotation in frame['b']['j']:
 				eulerVals = rotation['o']
@@ -70,15 +70,12 @@ for filename in files:
 				eulerVals.append(tracking[j])
 				j+=1
 				framedata.append(eulerVals)
-
+			'''
 			#Add the full frame data to the motion
 			motion.append(framedata)
 
 		#Trims motion such that they are all divisible by 10
-		motion = motion[:(len(motion) - (len(motion) % FRAMES_SET))]
-		motion = [motion[i * FRAMES_SET:(i + 1) * FRAMES_SET] for i in range((len(motion) + FRAMES_SET - 1) // FRAMES_SET)]
-		motion = np.array(motion)
-
+		
 		namestring = filename + "\\tensor.pickle"
 		if len(motion) != 0:
 			motion = np.array(motion)
