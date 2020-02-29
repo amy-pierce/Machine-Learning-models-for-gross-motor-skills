@@ -1,0 +1,39 @@
+Test Model 1
+
+Total Layers	: 7
+Epochs Run	: 6
+Layers		:
+	Dense(128, activation='relu'),
+	Dense(128, activation='relu'),
+	Dense(256, activation='relu'),
+	Dense(256, activation='relu'),
+	Dense(512, activation='relu'),
+	Dense(512, activation='relu'),
+	Dense(6, activation='softmax') -Output Layer
+
+Input Training Size	  :
+	207,652 Frames
+Neural Network Input Size : 
+	195 ((1, 39, 5) Flattened)
+
+Optimizer	: Nadam
+Loss Model	: Sparse Categorical Crossentropy
+
+Accuracy with Training Data :
+	Total Incorrect: 15 / 849
+	Model Accuracy : 98.23321554770318 %
+
+Notes -
+Model has a 'long' compilation time of approximately 4+ minutes.
+Nadam optimizer seems to work best with the current model information.
+Accuracy is improved when frames are contexted with each frame 
+in the motion as a whole.
+Single layers resulted in accuracies of approximately 97.3% when tested in training data.
+Use of Doubled layers has halved the number of inaccurate motion guesses.
+relu activation proves best for this task.
+
+Testing data will need to be acquired as quickly as possible to ensure the model is not
+currently normalized to the training dataset.
+
+Accuracy with Testing Data :
+	TBD
