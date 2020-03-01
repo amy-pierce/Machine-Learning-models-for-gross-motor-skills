@@ -4,8 +4,8 @@ import numpy as np
 import random
 
 #JUMPS MODEL
-jumps_train = pickle.load(open(r"./Testing_Data/jumps_train.pickle", "rb"))
-jumps_labels = pickle.load(open(r"./Testing_Data/jumps_labels.pickle", "rb"))
+jumps_train = pickle.load(open(r"./Testing_Data/layer_2_jumps_train.pickle", "rb"))
+jumps_labels = pickle.load(open(r"./Testing_Data/layer_2_jumps_labels.pickle", "rb"))
 
 jumps_train = np.array(jumps_train)
 jumps_labels = np.array(jumps_labels)

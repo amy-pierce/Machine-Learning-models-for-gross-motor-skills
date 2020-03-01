@@ -17,17 +17,17 @@ model = tf.keras.models.Sequential([
   tf.keras.layers.Dense(256, activation='relu'),
   tf.keras.layers.Dense(256, activation='relu'),
   tf.keras.layers.Dense(512, activation='relu'),
-  tf.keras.layers.Dense(512, activation='relu'),fda
+  tf.keras.layers.Dense(512, activation='relu'),
   tf.keras.layers.Dense(4, activation='softmax')
 ])
-fda
+
 #compile model
 model.compile(optimizer='Nadam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
 #fit model
-model.fit(train_frames, train_labels, epochs=6)
+model.fit(train_frames, train_labels, epochs=5)
 
 #Save Model
-model.save(r".\layer_1_model")
+model.save(r".\Models\layer_1_model")
