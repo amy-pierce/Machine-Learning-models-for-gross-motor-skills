@@ -27,9 +27,9 @@ class MainWindowUIClass(Ui_MainWindow):
 
     # slot
     def exportSlot(self):
-    	output = self.plainTextEdit.toPlainText()
-    	if output is not '':
-        	self.fileReader.writeDoc(output)
+    	output = self.results
+    	if len(output) > 0:
+        	self.fileReader.writeDoc(output,self.path)
         	self.clearText()
 
     # slot
@@ -54,9 +54,10 @@ class MainWindowUIClass(Ui_MainWindow):
             self.parseData = Parser(str(links[index]))
             pickleName = self.parseData.parse()
             self.testing = Testing(pickleName)
-            self.testing.analyse()
-            self.outputFile = open("output.txt","r")
-            self.text = self.outputFile.read() 
+            self.results = self.testing.analyse()
+            self.text = ""
+            for result in self.results:
+                self.text += result[0] + " is " + result[1] + "% " + result[2] + "\n"
             self.plainTextEdit.setPlainText(self.text)
 
 

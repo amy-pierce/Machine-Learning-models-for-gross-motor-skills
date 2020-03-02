@@ -13,11 +13,11 @@ class Testing:
 		self.i = 0
 
 	def analyse(self):
+		self.results = list() 
 		self.motion_keys = {0 : "HopLeft", 1 : "HopRight", 2 : "JogSpot", 3 : "JumpForward", 4 : "JumpHigh", 5 : "JumpSide"}
 		self.model = tensorflow.keras.models.load_model(r".\Current Model\current_model") #loaded model
-		self.output = open("output.txt","w")
 		for path in self.filepaths:
-
+				result = list()
 				t_motion = pickle.load(open(path, "rb"))
 				t_frames = list()
 
@@ -31,9 +31,7 @@ class Testing:
 					guesssed_motions[np.argmax(x)] += 1
 				
 				self.i+=1
-				print(path)
 				file_name = path.split('\\')
-				print(file_name)
 				if(len(file_name)>2):
 					rootFolder = file_name[0].split('/')
 					print(rootFolder)
@@ -51,20 +49,21 @@ class Testing:
 					file_name.replace('\\','/')
 				guessedIndex = np.argmax(guesssed_motions)
 				surePercentage = str(100*round((guesssed_motions[guessedIndex]/np.sum(guesssed_motions)),2))
+				result.append(file_name)
+				result.append(surePercentage)
 				if self.motion_keys[guessedIndex] == "HopLeft":
-					self.output.write(file_name +" is " + surePercentage + "% " + "HopLeft\n")
+					result.append("HopLeft")
 				elif self.motion_keys[guessedIndex] == "HopRight":
-					self.output.write(file_name +" is " + surePercentage + "% " + "HopRight\n")
+					result.append("HopRight")
 				elif self.motion_keys[guessedIndex] == "JogSpot":
-					self.output.write(file_name +" is " + surePercentage + "% " + "JogSpot\n")
+					result.append("JogSpot")
 				elif self.motion_keys[guessedIndex] == "JumpForward":
-					self.output.write(file_name +" is " + surePercentage + "% " + "JumpForward\n")
+					result.append("JumpForward")
 				elif self.motion_keys[guessedIndex] == "JumpHigh":
-					self.output.write(file_name +" is " + surePercentage + "% " + "JumpHigh\n")
+					result.append("JumpHigh")
 				elif self.motion_keys[guessedIndex] == "JumpSide":
-					self.output.write(file_name +" is " + surePercentage + "% " + "JumpSide\n")
-				else:
-					self.output.write("Most Likely:", self.motion_keys[np.argmax(guesssed_motions)])
+					result.append("JumpSide")
+				self.results.append(result)
 
 
-		self.output.close()
+		return self.results

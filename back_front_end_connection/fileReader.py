@@ -4,12 +4,12 @@ class FileReader:
         self.fileContent = ""
 
     def isValid(self, fileName):
-        try: 
+        try:
             file = open( fileName, 'r' )
             file.close()
-            return True
-        except:
             return False
+        except:
+            return True
 
     def setFileName(self, fileName):
         if self.isValid( fileName ):
@@ -25,9 +25,18 @@ class FileReader:
     def getFileContents(self):
         return self.fileContents
     
-    def writeDoc(self, text):
-        if self.isValid( self.fileName ):
-            fileName = self.fileName.split('.')[0] + ".csv"
-            file = open( fileName, 'w' )
-            file.write( text )
-            file.close()
+    def writeDoc(self, text, path):
+        success = False
+        i = 0
+        while(not success):
+            fileName = path.split('.')[0] + ".csv"
+            if self.isValid( fileName ):
+                file = open( fileName, 'w' )
+                file.write("File,Confidence,Motion\n")
+                for line in text:
+                    result = line[0] + "," + line[1] + "," + line[2] + "\n"
+                    file.write( result )
+                file.close()
+                success = True
+            i = i+1
+            path = path + "(" + str(i) +")"
