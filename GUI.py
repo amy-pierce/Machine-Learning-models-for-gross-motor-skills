@@ -1,8 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QObject, pyqtSlot
-from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QFileDialog
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QFileDialog, QWidget, QVBoxLayout
 from mainFrame import Ui_MainWindow, links, linkNames
 import sys
+import time
 from fileReader import FileReader
 
 class MainWindowUIClass(Ui_MainWindow):
@@ -63,13 +64,33 @@ class MainWindowUIClass(Ui_MainWindow):
             index = linkNames.index(self.path)
             self.text = open(str(links[index])).read()
             self.plainTextEdit.setPlainText(self.text)
+        self.showProgress = PopUpProgressBar()
+        self.showProgress.show()
 
 
-    def checkFilePath(filePath):
-    	for char in filePath:
-    		if char is "/":
-    			return True
-    	return False
+class PopUpProgressBar(QWidget):
+	def __init__(self,parent=None):
+		super(PopUpProgressBar, self).__init__(parent)
+		self.box = QtWidgets.QVBoxLayout(self)
+		self.pB = QtWidgets.QProgressBar(self)
+		self.pB.setRange(0,100)
+		self.pB.setGeometry(30, 40, 700, 100)
+		self.startButton = QtWidgets.QPushButton("Start",self)
+		self.box.addWidget(self.pB)
+		self.box.addWidget(self.startButton)
+		self.setLayout(self.box)
+		self.setGeometry(300, 300, 550, 100)
+		self.setWindowTitle('Progress Bar')
+		self.startButton.clicked.connect(self.onStart)
+
+	def onStart(self):
+		count = 0
+		while count < 100:
+			count += 1
+			time.sleep(0.1)
+			self.pB.setValue(count)
+
+
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
