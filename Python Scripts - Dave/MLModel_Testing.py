@@ -4,12 +4,12 @@ import pickle
 import os
 import fnmatch
 import tensorflow as tf
-
+import time
 motion_keys = {0 : "HopLeft", 1 : "HopRight", 2 : "JogSpot", 3 : "JumpSide", 4 : "JumpForward", 5 : "JumpHigh"}
 layer_1_keys = {0 : "Hop", 1 : "JogSpot", 2 : "JumpSide", 3 : "Jump"}
 layer_2_hops_keys = {0 : "HopLeft", 1 : "HopRight"}
 
-model = tensorflow.keras.models.load_model(r".\Models\layer1_model") #loaded model
+model = tensorflow.keras.models.load_model(r".\Models\layer_1_model") #loaded model
 hops_model = tensorflow.keras.models.load_model(r".\Models\hops_model")
 jumps_model = tensorflow.keras.models.load_model(r".\Models\jumps_model")
 
@@ -25,25 +25,24 @@ total_frames = 0
 
 for i, motion in enumerate(motions):
 	print("Motion", i , ":", motion_keys[labels[i]], "-", len(motion), "frames.")
-	print("-\tApproximate Analysis Time :", round((0.025 * len(motion)), 3), "s.")
+	print("Approximate Analysis Time :", round((0.025 * len(motion)), 3), "s.")
 	total_frames += len(motion)
 	guessed_motions = [0, 0, 0, 0, 0, 0]
 	if len(motion) > 1:
+		motion.shape = (len(motion), 1, 20, 5)
 		for frame in motion:
-			a = np.ones((1, 20, 5))
-			a[0] = frame
-			confidences = model.predict(a)
+			confidences = model.predict(frame)
 			#if the model is at least 92% confident in its decision
 			if confidences[0][np.argmax(confidences[0])] > 0.92:
 				if np.argmax(confidences[0]) == 0 : #If it is read as a hop
-					hops_con = hops_model.predict(a)
+					hops_con = hops_model.predict(frame)
 					#print("Hop:", hops_con)
 					if hops_con[0] < 0.2 : #If it is 92% confident and read as a hopleft
 						guessed_motions[0] += 1
 					if hops_con[0] > 0.8 : #If it is 92% confident and read as a hopright
 						guessed_motions[1] += 1
 				elif np.argmax(confidences[0]) == 3 : #If it is read as a jump
-					jumps_con = jumps_model.predict(a)
+					jumps_con = jumps_model.predict(frame)
 					#print("Jump:", jumps_con)
 					if jumps_con[0] < 0.2 : #If it is 92% confident and read as a jumpforward
 						guessed_motions[4] += 1
@@ -66,7 +65,7 @@ for i, motion in enumerate(motions):
 		if np.argmax(guessed_motions) == labels[i]:
 			total_correct += 1
 		else:
-			print("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tMismatch")
+			print("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tMismatch")
 		print("Total Accuracy :", total_correct/(i+1) * 100, "%\n")
 	else:
 		total_correct += 1
