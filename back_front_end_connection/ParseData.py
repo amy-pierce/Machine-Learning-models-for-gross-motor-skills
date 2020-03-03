@@ -12,7 +12,6 @@ class Parser:
 
 
 	def parse(self):
-		self.FRAMES_SET = 1
 		files = list()
 		if(".json" in self.folder):
 			path = self.folder.split('/')
@@ -75,24 +74,10 @@ class Parser:
 						j+=1
 						framedata.append(posCoords)
 
-					j = 0
-					#includes list of rotation offsets of each joint
-					for rotation in frame['b']['j']:
-						eulerVals = rotation['o']
-						eulerVals = re.findall(r"[-+]?\d*\.\d+|\d+", eulerVals)
-						for i, n in enumerate(eulerVals):
-							eulerVals[i] = float(n)
-						eulerVals.append(tracking[j])
-						j+=1
-						framedata.append(eulerVals)
 
 					#Add the full frame data to the motion
 					motion.append(framedata)
 
-				#Trims motion such that they are all divisible by 10
-				motion = motion[:(len(motion) - (len(motion) % self.FRAMES_SET))]
-				motion = [motion[i * self.FRAMES_SET:(i + 1) * self.FRAMES_SET] for i in range((len(motion) + self.FRAMES_SET - 1) // self.FRAMES_SET)]
-				motion = np.array(motion)
 
 				namestring = filename + "\\tensor.pickle"
 				if namestring not in pickleName:
