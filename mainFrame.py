@@ -1,4 +1,3 @@
-import base64
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton
@@ -14,6 +13,7 @@ class ListBoxWidget(QListWidget):
         self.setAcceptDrops(True)
         self.setDragDropOverwriteMode(True)
         self.setGeometry(QtCore.QRect(30, 20, 301, 511))
+        self.index = 0
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -29,23 +29,19 @@ class ListBoxWidget(QListWidget):
             event.ignore()
 
     def dropEvent(self, event):
-
         if event.mimeData().hasUrls():
             event.setDropAction(Qt.CopyAction)
             event.accept()
 
             for url in event.mimeData().urls():
                 if url.isLocalFile():
+                    self.index+=1
                     tmp = str(url.toLocalFile())
                     links.append(tmp)
                     onlyFileName = tmp.split("/")[-1]
-                    linkNames.append(onlyFileName)
-                    self.addItem(onlyFileName)
+                    linkNames.append(str(self.index)+". "+onlyFileName)
+                    self.addItem(str(self.index)+". "+onlyFileName)
 
-            # for file in links:
-            #     fileName = file.split("/")[-1]
-            #     self.addItem(fileName)
-            print(links)
         else:
             event.ignore()
 
@@ -72,18 +68,25 @@ class Ui_MainWindow(QObject):
         self.plainTextEdit.setObjectName("plainTextEdit")
 
         self.frame1 = QtWidgets.QWidget(self.centralwidget)
-        self.frame1.setGeometry(QtCore.QRect(120, 540, 701, 30))
+        self.frame1.setGeometry(QtCore.QRect(50, 540, 780, 30))
         self.frame1.setObjectName("frame1")
 
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.frame1)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
 
-        self.importButton = QtWidgets.QPushButton(self.frame1)
-        self.importButton.setObjectName("importButton")
+        self.importFileButton = QtWidgets.QPushButton(self.frame1)
+        self.importFileButton.setObjectName("importFileButton")
+        self.horizontalLayout.addWidget(self.importFileButton)
 
-        self.horizontalLayout.addWidget(self.importButton)
-        spacerItem = QtWidgets.QSpacerItem(518, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(120, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem1)
+
+        self.importFolderButton = QtWidgets.QPushButton(self.frame1)
+        self.importFolderButton.setObjectName("importFolderButton")
+        self.horizontalLayout.addWidget(self.importFolderButton)
+
+        spacerItem = QtWidgets.QSpacerItem(512, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
 
         self.exportButton = QtWidgets.QPushButton(self.frame1)
@@ -101,7 +104,8 @@ class Ui_MainWindow(QObject):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.importButton.clicked.connect(self.importSlot)
+        self.importFileButton.clicked.connect(self.importFileSlot)
+        self.importFolderButton.clicked.connect(self.importDirectorySlot)
         self.exportButton.clicked.connect(self.exportSlot)
         self.readButton.clicked.connect(self.readFileSlot)        
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -112,11 +116,17 @@ class Ui_MainWindow(QObject):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.readButton.setText(_translate("MainWindow", "Read File"))
         self.plainTextEdit.setDocumentTitle(_translate("MainWindow", "Output"))
-        self.importButton.setText(_translate("MainWindow", "Import"))
+        self.importFileButton.setText(_translate("MainWindow", "Import File"))
+        self.importFolderButton.setText(_translate("MainWindow", "Import Folder"))
         self.exportButton.setText(_translate("MainWindow", "Export"))
 
+
     @pyqtSlot( )
-    def importSlot( self ):
+    def importFileSlot( self ):
+        pass
+
+    @pyqtSlot( )
+    def importDirectorySlot( self ):
         pass
 
     @pyqtSlot( )

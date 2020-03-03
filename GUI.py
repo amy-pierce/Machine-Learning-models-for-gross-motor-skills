@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot
-from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QFileDialog
 from mainFrame import Ui_MainWindow, links, linkNames
 import sys
 from fileReader import FileReader
@@ -15,9 +15,11 @@ class MainWindowUIClass(Ui_MainWindow):
 
     def refreshAll(self):
         selectedFileName = self.fileReader.getFileName()
-        print(selectedFileName)
         links.append(selectedFileName)
-        self.lstbox.addItem(selectedFileName.split("/")[-1])
+        self.lstbox.index += 1
+        onlyFileName = selectedFileName.split("/")[-1]
+        linkNames.append(str(self.lstbox.index)+". "+onlyFileName)
+        self.lstbox.addItem(str(self.lstbox.index)+". "+onlyFileName)
 
     def clearText(self):
     	self.plainTextEdit.clear()
@@ -31,9 +33,8 @@ class MainWindowUIClass(Ui_MainWindow):
         	self.clearText()
 
     # slot
-    def importSlot(self):
+    def importFileSlot(self):
         options = QtWidgets.QFileDialog.Options()
-        options |= QtWidgets.QFileDialog.DontUseNativeDialog
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(
                         None,
                         "File Broswer",
@@ -41,7 +42,18 @@ class MainWindowUIClass(Ui_MainWindow):
                         "All Files (*);;Python Files (*.py)",
                         options=options)
         if fileName:
-            self.fileReader.setFileName( fileName )
+            self.fileReader.setFileName(fileName)
+            self.refreshAll()
+
+
+    # slot
+    def importDirectorySlot(self):
+        getExistingDirectory = QFileDialog.getExistingDirectory
+        fileName = getExistingDirectory(None,
+                                       	'Folder Broswer',
+                                        "")
+        if fileName:
+            self.fileReader.setFileName(fileName)
             self.refreshAll()
 
     # slot
@@ -53,6 +65,11 @@ class MainWindowUIClass(Ui_MainWindow):
             self.plainTextEdit.setPlainText(self.text)
 
 
+    def checkFilePath(filePath):
+    	for char in filePath:
+    		if char is "/":
+    			return True
+    	return False
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
