@@ -14,7 +14,7 @@ class Testing:
 
 	def analyse(self):
 		self.results = list() 
-		self.motion_keys = {0 : "HopLeft", 1 : "HopRight", 2 : "JogSpot", 3 : "JumpForward", 4 : "JumpHigh", 5 : "JumpSide"}
+		self.motion_keys = {0 : "HopLeft", 1 : "HopRight", 2 : "JogSpot", 3 : "JumpSide", 4 : "JumpForward", 5 : "JumpHigh"}
 		self.layer_1_keys = {0 : "Hop", 1 : "JogSpot", 2 : "JumpSide", 3 : "Jump"}
 		self.layer_2_hops_keys = {0 : "HopLeft", 1 : "HopRight"}
 		# self.model = tensorflow.keras.models.load_model(r".\Current Model\current_model") #loaded model
