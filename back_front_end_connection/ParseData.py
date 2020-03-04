@@ -4,6 +4,8 @@ import numpy as np
 import pickle
 import os
 import fnmatch
+import math
+from PyQt5.QtWidgets import QApplication
 
 class Parser:
 
@@ -11,7 +13,7 @@ class Parser:
 		self.folder = folder
 
 
-	def parse(self):
+	def parse(self,progress):
 		files = list()
 		if(".json" in self.folder):
 			path = self.folder.split('/')
@@ -27,10 +29,14 @@ class Parser:
 						files.append(str(i))
 
 		pickleName = list()
+		progress.pB.setValue(2)
+		pamount = len(files)
 		for filename in files:
 			try:
 				#Whole data file
 				namestring = filename + "\\skeleton.json"
+				tpath = namestring.replace("/",'\\')
+				progress.label.setText("Parsing " + tpath)
 				data = json.load(open(namestring))
 
 				#Convert ground coordinates into an array of floats
@@ -85,15 +91,20 @@ class Parser:
 				if len(motion) != 0:
 					motion = np.array(motion)
 					print("Writing to", namestring)
+					progress.label.setText("Writing to " + namestring)
 					pickle_out = open(namestring, "wb")
 					pickle.dump(motion, pickle_out)
 					pickle_out.close()
 				else:
 					print("0 length file found :", namestring)
+				QApplication.processEvents()
+				progress.pB.setValue(progress.pB.value() + math.floor((1/pamount) * 20))
+				QApplication.processEvents()
 
 			except Exception as e:
 				print("\t\t\tv ERROR ON BELOW v")
 				print(e)
 
+		progress.pB.setValue(20)
 		print("Compilaiton finished")
 		return pickleName
