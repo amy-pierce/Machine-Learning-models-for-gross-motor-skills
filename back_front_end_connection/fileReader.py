@@ -1,3 +1,4 @@
+import os
 class FileReader:
     def __init__(self):
         self.fileName = None
@@ -5,16 +6,21 @@ class FileReader:
 
     def isValid(self, fileName):
         try:
-            file = open( fileName, 'r' )
+            file = open( "Export\\"+ fileName, 'r' )
             file.close()
             return False
         except:
             return True
 
+    def isDirectory(self, fileName):
+        return os.path.isdir(fileName) 
+
     def setFileName(self, fileName):
-        if self.isValid( fileName ):
+        if self.isValid( fileName ) and not self.isDirectory(fileName):
             self.fileName = fileName
             self.fileContents = open( fileName, 'r' ).read()
+        elif self.isDirectory(fileName):
+            self.fileName = fileName
         else:
             self.fileContents = ""
             self.fileName = ""
@@ -28,10 +34,11 @@ class FileReader:
     def writeDoc(self, text, path):
         success = False
         i = 0
+        originalPath = path
         while(not success):
-            fileName = path.split('.')[0] + ".csv"
+            fileName = path.split('.')[1][1:] + ".csv"
             if self.isValid( fileName ):
-                file = open( fileName, 'w' )
+                file = open( "Export\\"+ fileName, 'w' )
                 file.write("File,Confidence,Motion\n")
                 for line in text:
                     result = line[0] + "," + line[1] + "," + line[2] + "\n"
@@ -39,4 +46,4 @@ class FileReader:
                 file.close()
                 success = True
             i = i+1
-            path = path + "(" + str(i) +")"
+            path = originalPath + "(" + str(i) +")"

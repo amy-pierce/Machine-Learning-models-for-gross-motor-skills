@@ -7,11 +7,13 @@ import time
 from fileReader import FileReader
 from ModelTesting import Testing
 from ParseData import Parser
+import tensorflow as tf
 
 class MainWindowUIClass(Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.fileReader = FileReader()
+        
         
     def setupUi(self, MW):
         super().setupUi( MW )
@@ -30,9 +32,9 @@ class MainWindowUIClass(Ui_MainWindow):
 
     # slot
     def exportSlot(self):
-    	output = self.plainTextEdit.toPlainText()
-    	if output is not '':
-        	self.fileReader.writeDoc(output)
+    	output = self.results
+    	if len(output) > 0:
+        	self.fileReader.writeDoc(output,self.path)
         	self.clearText()
 
     # slot
@@ -81,7 +83,7 @@ class PopUpProgressBar(QWidget):
         super(PopUpProgressBar, self).__init__(parent)
         self.box = QtWidgets.QVBoxLayout(self)
         self.pB = QtWidgets.QProgressBar(self)
-        self.label = QtWidgets.QLabel("Hi",self)
+        self.label = QtWidgets.QLabel("Didn't select anything, please select the files you imported",self)
         self.label.setGeometry(12,0,700,50)
         self.pB.setRange(0,100)
         self.pB.setGeometry(30, 40, 700, 100)
