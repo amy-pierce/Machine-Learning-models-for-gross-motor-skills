@@ -31,6 +31,7 @@ class Parser:
 		pickleName = list()
 		progress.pB.setValue(2)
 		pamount = len(files)
+		pcount = 2
 		for filename in files:
 			try:
 				#Whole data file
@@ -97,8 +98,9 @@ class Parser:
 					pickle_out.close()
 				else:
 					print("0 length file found :", namestring)
+				pcount += (1/pamount) * 20
 				QApplication.processEvents()
-				progress.pB.setValue(progress.pB.value() + math.floor((1/pamount) * 20))
+				progress.pB.setValue(pcount)
 				QApplication.processEvents()
 
 			except Exception as e:

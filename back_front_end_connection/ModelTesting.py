@@ -22,6 +22,8 @@ class Testing:
 		print(tf.config.experimental.list_physical_devices('GPU'))
 
 		progress.label.setText("Loading models...")
+
+		pcount = 20
 		QApplication.processEvents()
 		self.model = tensorflow.keras.models.load_model(r".\Models\layer_1_model") #loaded model
 		QApplication.processEvents()
@@ -32,6 +34,7 @@ class Testing:
 
 		pamount = len(self.filepaths)
 		for path in self.filepaths:
+				prevpB = progress.pB.value()
 				tpath = path.replace('/','\\')
 				progress.label.setText("Analyzing " + tpath)
 				result = list()
@@ -69,6 +72,12 @@ class Testing:
 									guessed_motions[2] += 1
 								elif np.argmax(confidences[0]) == 2 : #If it is read as a JumpSide
 									guessed_motions[3] += 1
+						if pamount <= 80:
+							pcount += (math.floor((1/pamount) * 80)/len(t_motion))
+							QApplication.processEvents()
+							progress.pB.setValue(math.floor(pcount))
+							QApplication.processEvents()
+
 				print(guessed_motions)
 				total_frames_read = 0
 				#Check how many frames were actually read
@@ -123,8 +132,12 @@ class Testing:
 				elif self.motion_keys[guessedIndex] == "JumpSide":
 					result.append("JumpSide")
 				self.results.append(result)
-				progress.pB.setValue(progress.pB.value() + math.floor((1/pamount) * 80))
-				QApplication.processEvents()
+
+				if pamount > 80:
+					pcount += 80/pamount
+					progress.pB.setValue(math.floor(pcount))
+					QApplication.processEvents()
+
 		progress.pB.setValue(100)
 		progress.label.setText("Done.")
 

@@ -76,6 +76,7 @@ class MainWindowUIClass(Ui_MainWindow):
             for result in self.results:
                 self.text += result[0] + " is " + result[1] + "% " + result[2] + "\n"
             self.plainTextEdit.setPlainText(self.text)
+        self.showProgress.close()
 
 
 class PopUpProgressBar(QWidget):
