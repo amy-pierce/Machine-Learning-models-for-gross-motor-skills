@@ -5,7 +5,9 @@ import os
 import fnmatch
 import tensorflow as tf
 import math
+import timeit
 from PyQt5.QtWidgets import QApplication
+
 
 class Testing:
 
@@ -15,6 +17,7 @@ class Testing:
 		self.i = 0
 
 	def analyse(self,progress):
+		startTime = timeit.default_timer()
 		self.results = list() 
 		self.motion_keys = {0 : "HopLeft", 1 : "HopRight", 2 : "JogSpot", 3 : "JumpSide", 4 : "JumpForward", 5 : "JumpHigh"}
 		self.layer_1_keys = {0 : "Hop", 1 : "JogSpot", 2 : "JumpSide", 3 : "Jump"}
@@ -32,13 +35,20 @@ class Testing:
 		self.jumps_model = tensorflow.keras.models.load_model(r".\Models\jumps_model")
 		QApplication.processEvents()
 
+		frameCount = 0
+		totalFrame = 0
+		frameTillNow = 0
 		pamount = len(self.filepaths)
+		motions = list()
 		for path in self.filepaths:
-				prevpB = progress.pB.value()
 				tpath = path.replace('/','\\')
-				progress.label.setText("Analyzing " + tpath)
-				result = list()
-				t_motion = pickle.load(open(path, "rb"))
+				progress.label.setText("Analyzing " + tpath)			
+				motion = pickle.load(open(path, "rb"))
+				motions.append(motion)
+		for t_motion in motions:
+				totalFrame += len(t_motion)
+		for t_motion in motions:
+				result = list()	
 				guessed_motions = [0, 0, 0, 0, 0, 0]
 				if len(t_motion) > 1:
 					for frame in t_motion:
@@ -77,6 +87,27 @@ class Testing:
 							QApplication.processEvents()
 							progress.pB.setValue(math.floor(pcount))
 							QApplication.processEvents()
+
+						frameTillNow += 1
+
+						if frameCount < 50:
+							frameCount += 1
+						else:
+							stopTime = timeit.default_timer()
+							time = stopTime - startTime
+							totalTime = (time/frameTillNow) * (totalFrame-frameTillNow)
+							frameCount = 0
+							QApplication.processEvents()
+							if totalTime < 60:
+								progress.time.setText("Time Left: " + str(math.floor(totalTime)) + " seconds")
+							else:
+								mi = math.floor(totalTime/60)
+								progress.time.setText("Time Left: " + str(mi) + " minutes" + " and " + str(math.floor(totalTime) - mi*60) + " seconds")							
+							QApplication.processEvents()
+
+
+
+
 
 				print(guessed_motions)
 				total_frames_read = 0
@@ -137,6 +168,7 @@ class Testing:
 					pcount += 80/pamount
 					progress.pB.setValue(math.floor(pcount))
 					QApplication.processEvents()
+
 
 		progress.pB.setValue(100)
 		progress.label.setText("Done.")

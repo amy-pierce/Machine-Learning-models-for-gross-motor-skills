@@ -86,6 +86,8 @@ class PopUpProgressBar(QWidget):
         self.pB = QtWidgets.QProgressBar(self)
         self.label = QtWidgets.QLabel("Didn't select anything, please select the files you imported",self)
         self.label.setGeometry(12,0,700,50)
+        self.time = QtWidgets.QLabel("Time Left: Calculating",self)
+        self.time.setGeometry(280,50,250,50)
         self.pB.setRange(0,100)
         self.pB.setGeometry(30, 40, 700, 100)
         self.box.addWidget(self.pB)
