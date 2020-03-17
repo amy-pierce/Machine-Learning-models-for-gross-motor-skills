@@ -35,19 +35,21 @@ class Testing:
 		self.jumps_model = tensorflow.keras.models.load_model(r".\Models\jumps_model")
 		QApplication.processEvents()
 
+		fileNum = 0
 		frameCount = 0
 		totalFrame = 0
 		frameTillNow = 0
 		pamount = len(self.filepaths)
 		motions = list()
-		for path in self.filepaths:
-				tpath = path.replace('/','\\')
-				progress.label.setText("Analyzing " + tpath)			
+		for path in self.filepaths:			
 				motion = pickle.load(open(path, "rb"))
 				motions.append(motion)
 		for t_motion in motions:
 				totalFrame += len(t_motion)
 		for t_motion in motions:
+				path = self.filepaths[fileNum]
+				tpath = path.replace('/','\\')
+				progress.label.setText("Analyzing " + tpath)
 				result = list()	
 				guessed_motions = [0, 0, 0, 0, 0, 0]
 				if len(t_motion) > 1:
@@ -138,6 +140,7 @@ class Testing:
 					file_name = path
 					file_name.replace('\\','/')
 
+				fileNum = fileNum + 1
 				guessedIndex = np.argmax(guessed_motions)
 				surePercentage = str(100*round((guessed_motions[guessedIndex]/np.sum(guessed_motions)),2))
 				result.append(file_name)
