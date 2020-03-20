@@ -149,6 +149,7 @@ class Testing:
 				else:
 					result.append("unreliable data")
 					result.append("unreliable")
+					result.append(path)
 					self.results.append(result)
 					return self.results
 					
@@ -166,6 +167,7 @@ class Testing:
 					result.append("JumpHigh")
 				elif self.motion_keys[guessedIndex] == "JumpSide":
 					result.append("JumpSide")
+				result.append(path)
 				self.results.append(result)
 
 				if pamount > 80:

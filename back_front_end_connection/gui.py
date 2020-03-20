@@ -8,6 +8,11 @@ from fileReader import FileReader
 from ModelTesting import Testing
 from ParseData import Parser
 import tensorflow as tf
+sys.path.insert(0,'./3d_Rendering')
+from Viewport import Viewport
+from Mesh import Mesh
+import pickle
+import pygame
 
 class MainWindowUIClass(Ui_MainWindow):
     def __init__(self):
@@ -26,16 +31,13 @@ class MainWindowUIClass(Ui_MainWindow):
         linkNames.append(str(self.lstbox.index)+". "+onlyFileName)
         self.lstbox.addItem(str(self.lstbox.index)+". "+onlyFileName)
 
-    def clearText(self):
-    	self.plainTextEdit.clear()
-    	self.plainTextEdit.setPlainText("Export CSV File Success")
 
     # slot
     def exportSlot(self):
     	output = self.results
     	if len(output) > 0:
-        	self.fileReader.writeDoc(output,self.path)
-        	self.clearText()
+            self.fileReader.writeDoc(output,self.path)
+            self.message.setText("Successfully exported.")
 
     # slot
     def importFileSlot(self):
@@ -63,6 +65,7 @@ class MainWindowUIClass(Ui_MainWindow):
 
     # slot
     def readFileSlot(self):
+        self.message.setText("")
         self.path = QListWidgetItem(self.lstbox.currentItem()).text()
         self.showProgress = PopUpProgressBar()
         self.showProgress.show()
@@ -74,9 +77,39 @@ class MainWindowUIClass(Ui_MainWindow):
             self.results = self.testing.analyse(self.showProgress)
             self.text = ""
             for result in self.results:
-                self.text += result[0] + " is " + result[1] + "% " + result[2] + "\n"
-            self.plainTextEdit.setPlainText(self.text)
+                text = result[0] + " is " + result[1] + "% " + result[2]
+                self.textbox.addItem(text)
         self.showProgress.close()
+
+    # slot
+    def animationSlot(self):
+        try:
+            self.message.setText("")
+            self.selectedAnimation = QListWidgetItem(self.textbox.currentItem()).text().split(" is")[0]
+            for result in self.results:
+                if result[0] == self.selectedAnimation:
+                    self.selectedAnimation = result[3]
+                    break
+            motion = pickle.load(open(self.selectedAnimation,"rb"))
+
+            v = Viewport((disable_mouse)=True,w=700,h=600)
+            v.objects.clear()
+            v.add_object(Mesh(name="cube",primitive_type="skeleton",pos=[-2.5,0,-5],color=(255,0,0),segments=10))
+            frame = 0
+            frames = 0
+            while True:
+                v.objects[0].set_skeleton_state(motion[frame%len(motion)],0,0,0)
+                v.update(draw_f=True,draw_e=True,draw_v=True)
+                if frames%7 == 0:
+                    frame += 1
+                frames += 1
+        
+        except(FileNotFoundError,IOError,AttributeError):
+            self.message.setText("No motion seleted.")
+        except:
+            pass
+        
+
 
 
 class PopUpProgressBar(QWidget):
