@@ -1,0 +1,28 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QComboBox, QPushButton
+
+
+class ComboBoxDemo(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        listExport = ['1', '2', '3', '4', '5']
+
+        self.comboBox = QComboBox(self)
+        self.comboBox.setGeometry(50, 50, 400, 35)
+        self.comboBox.addItems(listExport)
+
+        self.btn = QPushButton('Click', self)
+        self.btn.setGeometry(170, 120, 120, 35)
+        self.btn.clicked.connect(self.getComboValue)
+
+    def getComboValue(self):
+        print((self.comboBox.currentText(), self.comboBox.currentIndex()))
+
+
+app = QApplication(sys.argv)
+
+demo = ComboBoxDemo()
+demo.show()
+
+sys.exit(app.exec_())
