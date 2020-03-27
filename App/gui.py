@@ -1,16 +1,16 @@
+import sys
+sys.path.insert(0,'./lib')
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QFileDialog, QWidget, QVBoxLayout, QMessageBox
 from mainFrame import Ui_MainWindow, links, linkNames
-import sys
 import time
 from fileReader import FileReader
 from ModelTesting import Testing
 from ParseData import Parser
 import tensorflow as tf
-sys.path.insert(0,'./3d_Rendering')
-from Viewport import Viewport
-from Mesh import Mesh
+from threeD_Rendering import Viewport
+from threeD_Rendering import Mesh
 import pickle
 import pygame
 
