@@ -1,0 +1,4 @@
+File,Confidence,Motion
+test1/23_7_2019_10_32_55/tensor.pickle,98.0,JumpForward
+test1/25_7_2019_09_31_57/tensor.pickle,96.0,HopLeft
+test1/25_7_2019_11_09_18/tensor.pickle,98.0,JumpSide
