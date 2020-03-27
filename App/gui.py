@@ -14,10 +14,12 @@ from Mesh import Mesh
 import pickle
 import pygame
 
+
 class MainWindowUIClass(Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.fileReader = FileReader()
+        self.hasOutput = False
         
         
     def setupUi(self, MW):
@@ -34,10 +36,16 @@ class MainWindowUIClass(Ui_MainWindow):
 
     # slot
     def exportSlot(self):
-    	output = self.results
-    	if len(output) > 0:
-            self.fileReader.writeDoc(output,self.path)
-            self.message.setText("Successfully exported.")
+        getExistingDirectory = QFileDialog.getExistingDirectory
+        fileName = getExistingDirectory(None,
+                                        'Folder Broswer',
+                                        "")
+        if self.hasOutput and fileName is not "":
+            output = self.results
+            if len(output) > 0:
+                self.fileReader.writeDoc(output, self.path, fileName)
+                self.message.setText("Successfully exported.")
+                self.hasOutput = False;
 
     # slot
     def importFileSlot(self):
@@ -79,6 +87,7 @@ class MainWindowUIClass(Ui_MainWindow):
             for result in self.results:
                 text = result[0] + " is " + result[1] + "% " + result[2]
                 self.textbox.addItem(text)
+            self.hasOutput = True;
         self.showProgress.close()
 
     # slot
@@ -92,7 +101,7 @@ class MainWindowUIClass(Ui_MainWindow):
                     break
             motion = pickle.load(open(self.selectedAnimation,"rb"))
 
-            v = Viewport((disable_mouse)=True,w=700,h=600)
+            v = Viewport(disable_mouse=True,w=700,h=600)
             v.objects.clear()
             v.add_object(Mesh(name="cube",primitive_type="skeleton",pos=[-2.5,0,-5],color=(255,0,0),segments=10))
             frame = 0

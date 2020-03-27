@@ -31,18 +31,18 @@ class FileReader:
     def getFileContents(self):
         return self.fileContents
     
-    def writeDoc(self, text, path):
+    def writeDoc(self, text, path, directory):
         success = False
         i = 0
         originalPath = path
         while(not success):
             fileName = path.split('.')[1][1:] + ".csv"
             if self.isValid( fileName ):
-                file = open( "Export\\"+ fileName, 'w' )
+                file = open( directory +"\\"+ fileName, 'w' )
                 file.write("File,Confidence,Motion\n")
                 for line in text:
                     result = line[0] + "," + line[1] + "," + line[2] + "\n"
-                    file.write( result )
+                    file.write(result)
                 file.close()
                 success = True
             i = i+1
