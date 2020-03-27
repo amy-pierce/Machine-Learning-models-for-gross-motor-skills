@@ -21,8 +21,7 @@ class MainWindowUIClass(Ui_MainWindow):
         super().__init__()
         self.fileReader = FileReader()
         self.hasOutput = False
-        
-        
+             
     def setupUi(self, MW):
         super().setupUi( MW )
 
