@@ -27,11 +27,23 @@ class MainWindowUIClass(Ui_MainWindow):
     	self.plainTextEdit.setPlainText("Export CSV File Success")
 
     # slot
-    def exportSlot(self):
-    	output = self.plainTextEdit.toPlainText()
-    	if output is not '':
-        	self.fileReader.writeDoc(output)
-        	self.clearText()
+    #def exportSlot(self):
+    #	output = self.plainTextEdit.toPlainText()
+    #	if output is not '':
+     #   	self.fileReader.writeDoc(output)
+      #  	self.clearText()
+    # slot
+    def importFileSlot(self):
+        options = QtWidgets.QFileDialog.Options()
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(
+                        None,
+                        "File Broswer",
+                        "",
+                        "All Files (*);;Python Files (*.py)",
+                        options=options)
+        if fileName:
+            self.fileReader.setFileName(fileName)
+            self.refreshAll()
 
     # slot
     def importFileSlot(self):
