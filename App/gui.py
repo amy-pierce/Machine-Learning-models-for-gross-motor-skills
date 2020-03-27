@@ -56,7 +56,7 @@ class MainWindowUIClass(Ui_MainWindow):
                         None,
                         "File Broswer",
                         "",
-                        "All Files (*);;Python Files (*.py)",
+                        "JSON Files (*.json)",
                         options=options)
         if fileName:
             self.fileReader.setFileName(fileName)

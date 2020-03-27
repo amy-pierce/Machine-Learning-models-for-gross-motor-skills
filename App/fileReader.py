@@ -6,7 +6,15 @@ class FileReader:
 
     def isValid(self, fileName):
         try:
-            file = open( "Export\\"+ fileName, 'r' )
+            file = open( "\\"+ fileName, 'r' )
+            file.close()
+            return False
+        except:
+            return True
+    
+    def isValidDirectory(self, fileName, directory):
+        try:
+            file = open( directory + "\\"+ fileName, 'r' )
             file.close()
             return False
         except:
@@ -37,7 +45,7 @@ class FileReader:
         originalPath = path
         while(not success):
             fileName = path.split('.')[1][1:] + ".csv"
-            if self.isValid( fileName ):
+            if self.isValidDirectory( fileName, directory ):
                 file = open( directory +"\\"+ fileName, 'w' )
                 file.write("File,Confidence,Motion\n")
                 for line in text:
