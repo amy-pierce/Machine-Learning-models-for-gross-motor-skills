@@ -1,20 +1,20 @@
-import sys
-sys.path.insert(0,'./lib')
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QFileDialog, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QFileDialog, QWidget, QVBoxLayout, QMessageBox
 from mainFrame import Ui_MainWindow, links, linkNames
+import sys
 import time
 from fileReader import FileReader
 from ModelTesting import Testing
 from ParseData import Parser
 import tensorflow as tf
-from threeD_Rendering import Viewport
-from threeD_Rendering import Mesh
+sys.path.insert(0,'./3d_Rendering')
+from Viewport import Viewport
+from Mesh import Mesh
 import pickle
 import pygame
-import ctypes
 
+messageType = -1
 
 class MainWindowUIClass(Ui_MainWindow):
     def __init__(self):
@@ -45,8 +45,10 @@ class MainWindowUIClass(Ui_MainWindow):
             output = self.results
             if len(output) > 0:
                 self.fileReader.writeDoc(output, self.path, fileName)
-                self.message.setText("Successfully exported.")
-                self.hasOutput = False;
+                self.hasOutput = False
+                global messageType
+                messageType = 0
+                self.systemMessage = PopUpMessageBox()
 
     # slot
     def importFileSlot(self):
@@ -77,8 +79,8 @@ class MainWindowUIClass(Ui_MainWindow):
         self.message.setText("")
         self.path = QListWidgetItem(self.lstbox.currentItem()).text()
         self.showProgress = PopUpProgressBar()
-        self.showProgress.show()
         if self.path != '':
+            self.showProgress.show()
             index = linkNames.index(self.path)
             self.parseData = Parser(str(links[index]))
             pickleName = self.parseData.parse(self.showProgress)
@@ -89,7 +91,11 @@ class MainWindowUIClass(Ui_MainWindow):
                 text = result[0] + " is " + result[1] + "% " + result[2]
                 self.textbox.addItem(text)
             self.hasOutput = True;
-        self.showProgress.close()
+            self.showProgress.close()
+        else:
+            global messageType
+            messageType = 2
+            self.systemMessage = PopUpMessageBox()
 
     # slot
     def animationSlot(self):
@@ -115,13 +121,26 @@ class MainWindowUIClass(Ui_MainWindow):
                 frames += 1
         
         except(FileNotFoundError,IOError,AttributeError):
-            self.message.setText("No motion seleted.")
+            global messageType
+            messageType = 3
+            self.systemMessage = PopUpMessageBox()
         except:
             pass
         
+class PopUpMessageBox(QWidget):
+    def __init__(self, parent=None):
+        super(PopUpMessageBox, self).__init__(parent)
+        messages = ["Export Successfully!","Input Type Error!","No file chosen.","No motion seleted."]
+        icons = [QMessageBox.Information,QMessageBox.Critical,QMessageBox.Warning,QMessageBox.Warning]
+        global messageType
+        self.msg = messages[messageType]
+        self.mbox = QtWidgets.QMessageBox(self)
+        self.mbox.setWindowTitle("System Message")
+        self.mbox.setText(self.msg)
+        self.mbox.setIcon(icons[messageType])
 
-
-
+        x = self.mbox.exec_()
+        
 class PopUpProgressBar(QWidget):
     def __init__(self,parent=None):
         super(PopUpProgressBar, self).__init__(parent)
