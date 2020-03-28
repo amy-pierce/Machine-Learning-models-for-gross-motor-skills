@@ -76,6 +76,7 @@ class MainWindowUIClass(Ui_MainWindow):
     # slot
     def readFileSlot(self):
         self.message.setText("")
+        global messageType
         self.path = QListWidgetItem(self.lstbox.currentItem()).text()
         self.showProgress = PopUpProgressBar()
         if self.path != '':
@@ -89,10 +90,13 @@ class MainWindowUIClass(Ui_MainWindow):
             for result in self.results:
                 text = result[0] + " is " + result[1] + "% " + result[2]
                 self.textbox.addItem(text)
-            self.hasOutput = True;
             self.showProgress.close()
+            if self.text == "":
+                messageType = 1
+                self.systemMessage = PopUpMessageBox()
+            else:
+                self.hasOutput = True
         else:
-            global messageType
             messageType = 2
             self.systemMessage = PopUpMessageBox()
 
