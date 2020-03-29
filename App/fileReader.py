@@ -1,4 +1,5 @@
 import os
+from pandas import pandas as pd
 class FileReader:
     def __init__(self):
         self.fileName = None
@@ -39,19 +40,20 @@ class FileReader:
     def getFileContents(self):
         return self.fileContents
     
-    def writeDoc(self, text, path, directory):
+    def writeDoc(self, dataframe, path, directory, fileType):
         success = False
         i = 0
         originalPath = path
         while(not success):
-            fileName = path.split('.')[1][1:] + ".csv"
+            if(fileType == 'csv'):
+                fileName = path.split('.')[1][1:] + ".csv"
+            elif(fileType == 'json'):
+                fileName = path.split('.')[1][1:] + ".json"
             if self.isValidDirectory( fileName, directory ):
-                file = open( directory +"\\"+ fileName, 'w' )
-                file.write("File,Confidence,Motion\n")
-                for line in text:
-                    result = line[0] + "," + line[1] + "," + line[2] + "\n"
-                    file.write(result)
-                file.close()
+                if(fileType == 'csv'):
+                    dataframe.to_csv(directory +"\\"+ fileName,index = False, header = True)
+                elif(fileType == 'json'):
+                    dataframe.to_json(directory +"\\"+ fileName, orient='records')
                 success = True
             i = i+1
             path = originalPath + "(" + str(i) +")"

@@ -1,6 +1,6 @@
 import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QLabel, QWidget, QComboBox
 from PyQt5.QtCore import Qt, QUrl, QSize, QObject, pyqtSlot
 from PyQt5.QtGui import QIcon
 
@@ -54,6 +54,23 @@ class textListBoxWidget(QListWidget):
         self.setGeometry(QtCore.QRect(720, 20, 401, 511))
         self.index = 0
 
+class exportSelectWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        listExport = ['csv', 'json']
+
+        self.comboBox = QComboBox(self)
+        self.comboBox.setGeometry(50, 50, 400, 35)
+        self.comboBox.addItems(listExport)
+
+        self.btn = QPushButton('Next', self)
+        self.btn.setGeometry(170, 120, 120, 35)
+        self.btn.clicked.connect(self.select)
+
+    def select(self):
+        print((self.comboBox.currentText(), self.comboBox.currentIndex()))
+        self.comboBox.close()
 
 
 class Ui_MainWindow(QObject):

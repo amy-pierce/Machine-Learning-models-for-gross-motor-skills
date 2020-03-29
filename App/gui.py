@@ -2,9 +2,10 @@ import sys
 sys.path.insert(0,'./lib')
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QFileDialog, QWidget, QVBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListWidget, QListWidgetItem, QPushButton, QFileDialog, QWidget, QVBoxLayout, QMessageBox, QComboBox
 from mainFrame import Ui_MainWindow, links, linkNames
 import time
+from pandas import pandas as pd
 from fileReader import FileReader
 from ModelTesting import Testing
 from ParseData import Parser
@@ -36,18 +37,9 @@ class MainWindowUIClass(Ui_MainWindow):
 
     # slot
     def exportSlot(self):
-        getExistingDirectory = QFileDialog.getExistingDirectory
-        fileName = getExistingDirectory(None,
-                                        'Folder Broswer',
-                                        "")
-        if self.hasOutput and fileName is not "":
-            output = self.results
-            if len(output) > 0:
-                self.fileReader.writeDoc(output, self.path, fileName)
-                self.hasOutput = False
-                global messageType
-                messageType = 0
-                self.systemMessage = PopUpMessageBox()
+        if self.hasOutput:
+            self.exportSelection = exportSelectWidget(self)
+            self.exportSelection.show()
 
     # slot
     def importFileSlot(self):
@@ -86,10 +78,15 @@ class MainWindowUIClass(Ui_MainWindow):
             pickleName = self.parseData.parse(self.showProgress)
             self.testing = Testing(pickleName)
             self.results = self.testing.analyse(self.showProgress)
+            self.outputResult = list()
+            for result in self.results:
+                self.outputResult.append(result[:-1])
+            self.dataFrame = pd.DataFrame(self.outputResult,columns=['File','Confidence','Motion'])
+            print(self.dataFrame)
             self.text = ""
             for result in self.results:
-                text = result[0] + " is " + result[1] + "% " + result[2]
-                self.textbox.addItem(text)
+                self.text = result[0] + " is " + result[1] + "% " + result[2]
+                self.textbox.addItem(self.text)
             self.showProgress.close()
             if self.text == "":
                 messageType = 1
@@ -160,7 +157,37 @@ class PopUpProgressBar(QWidget):
         self.setGeometry(300, 300, 550, 100)
         self.setWindowTitle('Progress')
 
+class exportSelectWidget(QWidget):
+    def __init__(self,gui):
+        super().__init__()
+        self.gui = gui
+        listExport = ['csv', 'json']
 
+        self.text = QtWidgets.QLabel("Please select the type of file you would like to export:",self)
+        self.text.setGeometry(50,20,400,35)
+        
+        self.comboBox = QComboBox(self)
+        self.comboBox.setGeometry(50, 70, 400, 35)
+        self.comboBox.addItems(listExport)
+
+        self.btn = QPushButton('Next', self)
+        self.btn.setGeometry(180, 140, 120, 35)
+        self.btn.clicked.connect(self.select)
+
+        self.setWindowTitle('Select export type')
+
+    def select(self):
+        print((self.comboBox.currentText(), self.comboBox.currentIndex()))
+        getExistingDirectory = QFileDialog.getExistingDirectory
+        fileName = getExistingDirectory(None,
+                                        'Folder Broswer',
+                                        "")
+        if len(self.gui.dataFrame) > 0:
+            self.gui.fileReader.writeDoc(self.gui.dataFrame, self.gui.path, fileName,self.comboBox.currentText())
+            global messageType
+            messageType = 0
+            self.gui.systemMessage = PopUpMessageBox()
+        self.close()
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
