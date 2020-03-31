@@ -186,7 +186,7 @@ class exportSelectWidget(QWidget):
         fileName = getExistingDirectory(None,
                                         'Folder Broswer',
                                         "")
-        if len(self.gui.dataFrame) > 0:
+        if len(self.gui.dataFrame) > 0 and fileName != "":
             self.gui.fileReader.writeDoc(self.gui.dataFrame, self.gui.path, fileName,self.comboBox.currentText())
             global messageType
             messageType = 0
