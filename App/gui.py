@@ -40,6 +40,10 @@ class MainWindowUIClass(Ui_MainWindow):
         if self.hasOutput:
             self.exportSelection = exportSelectWidget(self)
             self.exportSelection.show()
+        else:
+            global messageType
+            messageType = 2
+            self.systemMessage = PopUpMessageBox()
 
     # slot
     def importFileSlot(self):
