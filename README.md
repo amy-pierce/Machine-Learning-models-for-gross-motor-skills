@@ -8,7 +8,7 @@ https://youtu.be/tnGhFdTVE-g (the export function was enhanced to allow you to s
 ### Requirements:
 #### The tools and libraries you need to install to run this App:
 * Python 3.7(the tested version was Python 3.7.7) or other versions of Python(here are knowing issues with Python 3.8)
-* TensorFlow for Python 3.7(you may want to setup your GPU to improve the performance of the App, here's a link showing you how to do that https://www.tensorflow.org/install/gpu)
+* TensorFlow for Python 3.7(you may want to setup your GPU to improve the performance of the App, here's a link showing you how to do that https://www.tensorflow.org/install/gpu
 
 ### Usage:
 0. Run gui.py, it takes a little longer time when the program was loaded for the first time.
